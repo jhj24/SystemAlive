@@ -1,0 +1,56 @@
+apply plugin: 'com.android.library'
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'hellodaemon'
+
+    publishedGroupId = 'com.xdandroid'
+    libraryName = 'HelloDaemon'
+    artifact = 'hellodaemon'
+
+    libraryDescription = 'Android service daemon using JobScheduler.'
+
+    siteUrl = 'https://github.com/xingda920813/HelloDaemon'
+    gitUrl = 'https://github.com/xingda920813/HelloDaemon.git'
+
+    libraryVersion = '1.2.2'
+
+    developerId = 'xingda920813'
+    developerName = 'Da Xing'
+    developerEmail = '570396198@qq.com'
+
+    licenseName = 'The MIT License (MIT)'
+    licenseUrl = 'https://opensource.org/licenses/MIT'
+    allLicenses = ["MIT"]
+}
+
+android {
+    compileSdkVersion 26
+
+
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    api 'io.reactivex.rxjava2:rxjava:2.+'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+}
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'bintrayv1.gradle'
