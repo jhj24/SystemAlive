@@ -21,47 +21,50 @@ import java.util.List;
 public class IntentWrapper {
 
     //Android 7.0+ Doze 模式
-    protected static final int DOZE = 98;
+    private static final int DOZE = 98;
     //华为 自启管理
-    protected static final int HUAWEI = 99;
+    private static final int HUAWEI = 99;
     //华为 锁屏清理
-    protected static final int HUAWEI_GOD = 100;
+    private static final int HUAWEI_GOD = 100;
     //小米 自启动管理
-    protected static final int XIAOMI = 101;
+    private static final int XIAOMI = 101;
     //小米 神隐模式
-    protected static final int XIAOMI_GOD = 102;
+    private static final int XIAOMI_GOD = 102;
     //三星 5.0/5.1 自启动应用程序管理
-    protected static final int SAMSUNG_L = 103;
+    private static final int SAMSUNG_L = 103;
     //魅族 自启动管理
-    protected static final int MEIZU = 104;
+    private static final int MEIZU = 104;
     //魅族 待机耗电管理
-    protected static final int MEIZU_GOD = 105;
+    private static final int MEIZU_GOD = 105;
     //Oppo 自启动管理
-    protected static final int OPPO = 106;
+    private static final int OPPO = 106;
     //三星 6.0+ 未监视的应用程序管理
-    protected static final int SAMSUNG_M = 107;
+    private static final int SAMSUNG_M = 107;
     //Oppo 自启动管理(旧版本系统)
-    protected static final int OPPO_OLD = 108;
+    private static final int OPPO_OLD = 108;
     //Vivo 后台高耗电
-    protected static final int VIVO_GOD = 109;
+    private static final int VIVO_GOD = 109;
     //金立 应用自启
-    protected static final int GIONEE = 110;
+    private static final int GIONEE = 110;
     //乐视 自启动管理
-    protected static final int LETV = 111;
+    private static final int LETV = 111;
     //乐视 应用保护
-    protected static final int LETV_GOD = 112;
+    private static final int LETV_GOD = 112;
     //酷派 自启动管理
-    protected static final int COOLPAD = 113;
+    private static final int COOLPAD = 113;
     //联想 后台管理
-    protected static final int LENOVO = 114;
+    private static final int LENOVO = 114;
     //联想 后台耗电优化
-    protected static final int LENOVO_GOD = 115;
+    private static final int LENOVO_GOD = 115;
     //中兴 自启管理
-    protected static final int ZTE = 116;
+    private static final int ZTE = 116;
     //中兴 锁屏加速受保护应用
-    protected static final int ZTE_GOD = 117;
+    private static final int ZTE_GOD = 117;
+    //其他类
+    private static final int OTHER = 118;
 
-    protected static List<IntentWrapper> sIntentWrapperList;
+
+    private static List<IntentWrapper> sIntentWrapperList;
 
     public static List<IntentWrapper> getIntentWrapperList() {
         if (sIntentWrapperList == null) {
@@ -73,13 +76,20 @@ public class IntentWrapper {
             //Android 7.0+ Doze 模式
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 PowerManager pm = (PowerManager) DaemonEnv.sApp.getSystemService(Context.POWER_SERVICE);
-                boolean ignoringBatteryOptimizations = pm.isIgnoringBatteryOptimizations(DaemonEnv.sApp.getPackageName());
+                boolean ignoringBatteryOptimizations = false;
+                if (pm != null) {
+                    ignoringBatteryOptimizations = pm.isIgnoringBatteryOptimizations(DaemonEnv.sApp.getPackageName());
+                }
                 if (!ignoringBatteryOptimizations) {
                     Intent dozeIntent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                     dozeIntent.setData(Uri.parse("package:" + DaemonEnv.sApp.getPackageName()));
                     sIntentWrapperList.add(new IntentWrapper(dozeIntent, DOZE));
                 }
             }
+
+            Intent otherIntent = new Intent();
+            otherIntent.setComponent(new ComponentName("com.android.settings", "com.android.settings.BackgroundApplicationsManager"));
+            sIntentWrapperList.add(new IntentWrapper(otherIntent, OTHER));
 
             //华为 自启管理
             Intent huaweiIntent = new Intent();
@@ -179,11 +189,13 @@ public class IntentWrapper {
             Intent zteGodIntent = new Intent();
             zteGodIntent.setComponent(new ComponentName("com.zte.heartyservice", "com.zte.heartyservice.setting.ClearAppSettingsActivity"));
             sIntentWrapperList.add(new IntentWrapper(zteGodIntent, ZTE_GOD));
+
+
         }
         return sIntentWrapperList;
     }
 
-    protected static String sApplicationName;
+    private static String sApplicationName;
 
     public static String getApplicationName() {
         if (sApplicationName == null) {
@@ -437,6 +449,20 @@ public class IntentWrapper {
                             .show();
                     showed.add(iw);
                     break;
+                case OTHER:
+                    new AlertDialog.Builder(a)
+                            .setCancelable(false)
+                            .setTitle("需要允许 " + getApplicationName() + " 的自启动")
+                            .setMessage(reason + "需要 " + getApplicationName() + " 加入到自启动白名单。\n\n" +
+                                    "请点击『确定』，在弹出的『自启动管理』中，将 " + getApplicationName() + " 对应的开关打开。")
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface d, int w) {
+                                    iw.startActivitySafely(a);
+                                }
+                            })
+                            .show();
+                    showed.add(iw);
+                    break;
             }
         }
         return showed;
@@ -451,10 +477,10 @@ public class IntentWrapper {
         a.startActivity(launcherIntent);
     }
 
-    protected Intent intent;
-    protected int type;
+    private Intent intent;
+    private int type;
 
-    protected IntentWrapper(Intent intent, int type) {
+    private IntentWrapper(Intent intent, int type) {
         this.intent = intent;
         this.type = type;
     }
@@ -462,7 +488,7 @@ public class IntentWrapper {
     /**
      * 判断本机上是否有能处理当前Intent的Activity
      */
-    protected boolean doesActivityExists() {
+    private boolean doesActivityExists() {
         if (!DaemonEnv.sInitialized) return false;
         PackageManager pm = DaemonEnv.sApp.getPackageManager();
         List<ResolveInfo> list = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
@@ -472,7 +498,7 @@ public class IntentWrapper {
     /**
      * 安全地启动一个Activity
      */
-    protected void startActivitySafely(Activity activityContext) {
+    private void startActivitySafely(Activity activityContext) {
         try {
             activityContext.startActivity(intent);
         } catch (Exception e) {

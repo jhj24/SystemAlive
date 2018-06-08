@@ -5,7 +5,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 
-import com.xdandroid.hellodaemon.AbsWorkService;
+import com.jhj.alive.AbsWorkService;
 
 import java.util.concurrent.TimeUnit;
 

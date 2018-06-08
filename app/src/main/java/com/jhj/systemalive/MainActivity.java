@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.xdandroid.hellodaemon.DaemonEnv;
-import com.xdandroid.hellodaemon.IntentWrapper;
+import com.jhj.alive.DaemonEnv;
+import com.jhj.alive.IntentWrapper;
 
 
 public class MainActivity extends Activity {

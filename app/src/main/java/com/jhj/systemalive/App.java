@@ -2,7 +2,7 @@ package com.jhj.systemalive;
 
 import android.app.Application;
 
-import com.xdandroid.hellodaemon.DaemonEnv;
+import com.jhj.alive.DaemonEnv;
 
 
 public class App extends Application {
