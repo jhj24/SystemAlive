@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.jhj.alive">
 
 
@@ -10,23 +11,18 @@
 
         <receiver
             android:name="com.jhj.alive.WakeUpReceiver"
+            android:enabled="true"
+            android:exported="true"
             android:process=":watch">
             <intent-filter>
-                <action android:name="android.intent.action.USER_PRESENT" />
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
                 <action android:name="com.xdandroid.hellodaemon.CANCEL_JOB_ALARM_SUB" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
-            android:name="com.jhj.alive.WakeUpReceiver$WakeUpAutoStartReceiver"
-            android:process=":watch">
-            <intent-filter>
+                <action
+                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                    tools:ignore="BatteryLife" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-            <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
 

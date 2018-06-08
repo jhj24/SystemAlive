@@ -3,6 +3,7 @@ package com.jhj.alive;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 public class WakeUpReceiver extends BroadcastReceiver {
 
@@ -21,20 +22,12 @@ public class WakeUpReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.w("xxxx", "广播开始运行了");
         if (intent != null && ACTION_CANCEL_JOB_ALARM_SUB.equals(intent.getAction())) {
             WatchDogService.cancelJobAlarmSub();
             return;
         }
         if (!DaemonEnv.sInitialized) return;
         DaemonEnv.startServiceMayBind(DaemonEnv.sServiceClass);
-    }
-
-    public static class WakeUpAutoStartReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (!DaemonEnv.sInitialized) return;
-            DaemonEnv.startServiceMayBind(DaemonEnv.sServiceClass);
-        }
     }
 }
