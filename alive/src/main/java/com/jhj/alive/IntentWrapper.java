@@ -60,8 +60,8 @@ public class IntentWrapper {
     private static final int ZTE = 116;
     //中兴 锁屏加速受保护应用
     private static final int ZTE_GOD = 117;
-    //其他类
-    private static final int OTHER = 118;
+
+    private static boolean isSettingStart;
 
 
     private static List<IntentWrapper> sIntentWrapperList;
@@ -87,9 +87,6 @@ public class IntentWrapper {
                 }
             }
 
-            Intent otherIntent = new Intent();
-            otherIntent.setComponent(new ComponentName("com.android.settings", "com.android.settings.BackgroundApplicationsManager"));
-            sIntentWrapperList.add(new IntentWrapper(otherIntent, OTHER));
 
             //华为 自启管理
             Intent huaweiIntent = new Intent();
@@ -261,6 +258,7 @@ public class IntentWrapper {
                             })
                             .show();
                     showed.add(iw);
+                    isSettingStart = true;
                     break;
                 case ZTE_GOD:
                 case HUAWEI_GOD:
@@ -276,6 +274,7 @@ public class IntentWrapper {
                             })
                             .show();
                     showed.add(iw);
+                    isSettingStart = true;
                     break;
                 case XIAOMI_GOD:
                     new AlertDialog.Builder(a)
@@ -290,6 +289,7 @@ public class IntentWrapper {
                             })
                             .show();
                     showed.add(iw);
+                    isSettingStart = true;
                     break;
                 case SAMSUNG_L:
                     new AlertDialog.Builder(a)
@@ -304,6 +304,7 @@ public class IntentWrapper {
                             })
                             .show();
                     showed.add(iw);
+                    isSettingStart = true;
                     break;
                 case SAMSUNG_M:
                     new AlertDialog.Builder(a)
@@ -318,6 +319,7 @@ public class IntentWrapper {
                             })
                             .show();
                     showed.add(iw);
+                    isSettingStart = true;
                     break;
                 case MEIZU:
                     new AlertDialog.Builder(a)
@@ -332,6 +334,7 @@ public class IntentWrapper {
                             })
                             .show();
                     showed.add(iw);
+                    isSettingStart = true;
                     break;
                 case MEIZU_GOD:
                     new AlertDialog.Builder(a)
@@ -346,6 +349,7 @@ public class IntentWrapper {
                             })
                             .show();
                     showed.add(iw);
+                    isSettingStart = true;
                     break;
                 case ZTE:
                 case LETV:
@@ -364,6 +368,7 @@ public class IntentWrapper {
                             })
                             .show();
                     showed.add(iw);
+                    isSettingStart = true;
                     break;
                 case COOLPAD:
                     new AlertDialog.Builder(a)
@@ -378,6 +383,7 @@ public class IntentWrapper {
                             })
                             .show();
                     showed.add(iw);
+                    isSettingStart = true;
                     break;
                 case VIVO_GOD:
                     new AlertDialog.Builder(a)
@@ -392,6 +398,7 @@ public class IntentWrapper {
                             })
                             .show();
                     showed.add(iw);
+                    isSettingStart = true;
                     break;
                 case GIONEE:
                     new AlertDialog.Builder(a)
@@ -406,6 +413,7 @@ public class IntentWrapper {
                             })
                             .show();
                     showed.add(iw);
+                    isSettingStart = true;
                     break;
                 case LETV_GOD:
                     new AlertDialog.Builder(a)
@@ -420,6 +428,7 @@ public class IntentWrapper {
                             })
                             .show();
                     showed.add(iw);
+                    isSettingStart = true;
                     break;
                 case LENOVO:
                     new AlertDialog.Builder(a)
@@ -434,6 +443,7 @@ public class IntentWrapper {
                             })
                             .show();
                     showed.add(iw);
+                    isSettingStart = true;
                     break;
                 case LENOVO_GOD:
                     new AlertDialog.Builder(a)
@@ -448,22 +458,21 @@ public class IntentWrapper {
                             })
                             .show();
                     showed.add(iw);
-                    break;
-                case OTHER:
-                    new AlertDialog.Builder(a)
-                            .setCancelable(false)
-                            .setTitle("需要允许 " + getApplicationName() + " 的自启动")
-                            .setMessage(reason + "需要 " + getApplicationName() + " 加入到自启动白名单。\n\n" +
-                                    "请点击『确定』，在弹出的『自启动管理』中，将 " + getApplicationName() + " 对应的开关打开。")
-                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface d, int w) {
-                                    iw.startActivitySafely(a);
-                                }
-                            })
-                            .show();
-                    showed.add(iw);
+                    isSettingStart = true;
                     break;
             }
+        }
+        if (!isSettingStart) {
+            new AlertDialog.Builder(a)
+                    .setCancelable(false)
+                    .setTitle("提示")
+                    .setMessage("请在设置中设置" + getApplicationName() + "应用自动启动，考勤提醒才能及时提醒")
+                    .setPositiveButton("关闭", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface d, int w) {
+                            d.dismiss();
+                        }
+                    })
+                    .show();
         }
         return showed;
     }

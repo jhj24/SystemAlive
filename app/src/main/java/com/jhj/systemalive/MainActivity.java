@@ -1,6 +1,9 @@
 package com.jhj.systemalive;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
@@ -26,6 +29,13 @@ public class MainActivity extends Activity {
                 break;
             case R.id.btn_stop:
                 TraceServiceImpl.stopService();
+                break;
+            case R.id.btn_test:
+                Intent intent = new Intent();
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+                intent.setData(Uri.fromParts("package", getPackageName(), null));
+                startActivity(intent);
                 break;
         }
     }
